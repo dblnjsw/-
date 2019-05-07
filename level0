@@ -1,4 +1,4 @@
-from test import *
+from gameObject import *
 
 class level0:
     #关卡布局
