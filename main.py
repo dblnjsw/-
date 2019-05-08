@@ -60,7 +60,7 @@ class game:
                     if ee.rect.y==e.rect.y+100 and ee.rect.x==e.rect.x:
                         for eee in self.l0.noun:
                             # 如果有，那上边有没有名词
-                            if eee.rect.y==e.rect.y-100 and ee.rect.x==e.rect.x:
+                            if eee.rect.y==e.rect.y-100 and eee.rect.x==e.rect.x:
                                 if self.l0.allRule.__contains__(ee.bit | eee.bit):
                                     pass
                                 else:
