@@ -63,9 +63,9 @@ class level4:
         self.flag = gameObject('flag', 700, 300)
 
         # 石是定（规则）
-        self.shi = gameObject('shi', 900, 0)
-        self.is2 = gameObject('is', 1000, 0)
-        self.ding = gameObject('ding', 1100, 0)
+        self.shi = gameObject('shi', 900, 600)
+        self.is2 = gameObject('is', 1000, 600)
+        self.ding = gameObject('ding', 1100, 600)
 
         # 箱是推（规则）
         self.xiang = gameObject('xiang', 100, 0)
