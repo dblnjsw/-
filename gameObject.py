@@ -50,5 +50,46 @@ class gameObject(pygame.sprite.Sprite):
     def __del__(self):
         self.rect.x=1500
         self.rect.y=1500
+        
+class MovingObject(pygame.sprite.Sprite):
+    def __init__(self, tag, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(imFolder + "/" + tag + ".jpg").convert()  # 加载图片
+        self.image.set_colorkey(WHITE)
+        self.image.set_alpha(100)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def moving(self, x, y):
+        self.rect.x += x
+        self.rect.y += y
+
+
+class MenuObject(pygame.sprite.Sprite):
+    # 括号里填（什么图片，初始坐标x，初始坐标y，往哪个轴移动，移动距离（正负均可））
+    def __init__(self, tag, x, y, dx):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(imFolder + "/" + tag + ".jpg").convert()  # 加载图片
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+        self.acc = 0
+        self.vel = 0
+        self.f = 0.08  # 阻力
+        self.xx = dx
+
+    def update(self):
+        self.acc = (self.xx - self.rect.x) / 1000
+        if self.vel > 0:
+            ac = self.acc - self.f
+        else:
+            ac = self.acc + self.f
+
+        self.vel += ac
+        self.rect.x += self.vel
+
+        
 
 
