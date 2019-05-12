@@ -1,20 +1,24 @@
 #!C:/python/python.exe
 from test import *
 from level0 import *
+import random
 
 class game:
     def __init__(self):#构造函数，初始化各种东西
         pygame.init()
         pygame.mixer.init()
-        self.src = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.src = pygame.display.set_mode((WIDTH, HEIGHT),pygame.FULLSCREEN)
         self.running=True
         self.upLock=1
         self.moves=[]
-
+        # 216add
+        self.wait_any_key = True
+        self.clock = pygame.time.Clock()
+        self.timeee = 0
 
         self.allSprite=pygame.sprite.Group()
         #加载关卡
-        self.l0=level0()
+        self.l0=level4()
         for e in self.l0.all:
             self.allSprite.add(e)
     def run(self):#主循环
@@ -40,6 +44,7 @@ class game:
         elif keys[pygame.K_z]:
             self.withdraw()
             self.upLock=1
+
         #每下行动后更新规则，50行的if
         if self.upLock==1:
             self.l0.allRule.clear()
@@ -64,7 +69,7 @@ class game:
                                 if self.l0.allRule.__contains__(ee.bit | eee.bit):
                                     pass
                                 else:
-                                    self.l0.allRule.append(ee.bit | eee.bit)
+                                        self.l0.allRule.append(ee.bit | eee.bit)
 
                 #寻找名词是名词规则
                 for ee in self.l0.noun:
@@ -181,8 +186,89 @@ class game:
                 unit=e[0]
                 unit.rect.x=e[1]
                 unit.rect.y=e[2]
+    def show_start_screen(self):
+        # 进入一个等待任意按键的死循环
+        fall_picture_queue = []
 
+        test_menu = MenuObject('title', -300, 100,420)
+        # hit_size = 22
+        # size_up = True
+        # 开始界面设置
+        while self.wait_any_key:
+            #self.clock.tick(FPS)
+            self.events()
+            self.src.fill(WHITE)
+            #self.draw_text(TITLE, 48, BLACK, WIDTH / 2, HEIGHT / 4)
+            self.draw_text("操作说明：方向键移动", 22, BLACK, WIDTH / 2, HEIGHT / 2)
+            # self.draw_text("按任意键开始", int(hit_size), BLACK, WIDTH / 2, HEIGHT * 3 / 4)
+            press_enter = MovingObject('start', WIDTH / 4.5, HEIGHT * 3 / 4)
+            temp_sprite = pygame.sprite.Group()
+            temp_sprite.add(press_enter)
+            test_menu.update()
+
+            temp_sprite.add(test_menu)
+
+            self.timeee=self.timeee+1
+            if random.randint(0, 100) >= 95 and self.timeee>=30:
+                r_picture = ALL_PICTURE_TAG[random.randint(0, len(ALL_PICTURE_TAG) - 1)]
+                r_x = random.randint(0, 12)
+                fall_picture_queue.append(MovingObject(r_picture, r_x*100, -100))
+                self.timeee=0
+
+            for x in fall_picture_queue:
+                temp_sprite.add(x)
+                x.moving(0, 2)
+            """
+            if size_up is True:
+                hit_size += hit_size / 64
+            else:
+                hit_size -= 9 / hit_size
+            if hit_size >= 32:
+                size_up = False
+            elif hit_size <= 18:
+                size_up = True
+            """
+            temp_sprite.draw(self.src)
+            pygame.display.flip()
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_RETURN]:
+                self.wait_any_key = False
+        self.wait_any_key=True
+
+    #选择关卡见面
+    def show_select_screen(self):
+        self.l1 = MenuObject('level1', -1000, 0, 0)
+        self.l2 = MenuObject('level2', -1000, 0, 400)
+        self.l3 = MenuObject('level3', -1000, 0, 800)
+        self.l4 = MenuObject('level4', -1000, 400, 0)
+        self.l5 = MenuObject('level5', -1000, 400, 400)
+        temp_sprite=pygame.sprite.Group()
+        temp_sprite.add(self.l1)
+        temp_sprite.add(self.l2)
+        temp_sprite.add(self.l3)
+        temp_sprite.add(self.l4)
+        temp_sprite.add(self.l5)
+
+        while self.wait_any_key:
+            self.events()
+            self.src.fill(WHITE)
+            temp_sprite.update()
+            temp_sprite.draw(self.src)
+            pygame.display.flip()
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_1]:
+                self.wait_any_key = False
+
+    def draw_text(self, text, size, color, x, y):  # 方法：打印文字
+        font = pygame.font.Font(pygame.font.match_font(FONT_NAME), size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.midtop = (x, y)
+        self.src.blit(text_surface, text_rect)
 #程序从这里开始，run是死循环
 g = game()
+g.show_start_screen()
+g.show_select_screen()
 g.run()
 pygame.quit()
